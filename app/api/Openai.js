@@ -3,7 +3,7 @@ import {constants} from '../constants';
 
 const client = axios.create({
   headers: {
-    Authorization: `Bearer ${constants.apiKey}`,
+    Authorization: `Bearer api key here`,
     'Content-Type': 'application/json',
   },
 });
