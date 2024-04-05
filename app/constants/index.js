@@ -21,3 +21,7 @@ export const constants = {
   USER: 'user',
   ASSISTANT: 'assistant',
 };
+
+export const walkThroughConstants = {
+  ONBOARDED: 'onboarded',
+};
