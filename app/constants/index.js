@@ -21,3 +21,5 @@ export const constants = {
   USER: 'user',
   ASSISTANT: 'assistant',
 };
+
+export const apiKey = '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';

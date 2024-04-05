@@ -48,5 +48,14 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+
+	 <key>NSMicrophoneUsageDescription</key>
+  	<string>This application needs access to the microphone</string>
+  	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Allow Chatbot to use speech recognition</string>
+
+	<key>Privacy - Speech Recognition Usage Description</key>
+	<string>$(PRODUCT_NAME) speech use</string>
+  
 </dict>
 </plist>

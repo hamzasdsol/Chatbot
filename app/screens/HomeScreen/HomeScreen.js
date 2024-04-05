@@ -1,11 +1,13 @@
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import Bot from '../../assets/images/bot.png';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import Voice from '@react-native-community/voice';
+
+import Bot from '../../assets/images/bot.png';
 import AppText from '../../components/AppText';
 import Features from '../../components/Features';
 import Messages from '../../components/Messages';
@@ -13,7 +15,52 @@ import {dummyMessages} from '../../constants';
 
 const HomeScreen = () => {
   const [isRecording, setRecording] = useState(false);
-  const [messages, setMessages] = useState(dummyMessages);
+  const [isSpeaking, setSpeaking] = useState(false);
+  const [messages, setMessages] = useState([]);
+  const [result, setResult] = useState('');
+
+  const speechStartHandler = e => {
+    console.log('speech start handler');
+  };
+  const speechEndHandler = e => {
+    setRecording(false);
+    console.log('speech end handler');
+  };
+  const speechResultsHandler = e => {
+    console.log('voice event', e);
+  };
+  const speechErrorHandler = e => {
+    console.log('speech error handler: ', e);
+  };
+
+  const startRecording = async () => {
+    setRecording(true);
+
+    try {
+      await Voice.start('en-GB'); // en-US
+    } catch (ex) {
+      console.log('voice recording start error: ', ex);
+    }
+  };
+
+  const stopRecording = async () => {
+    try {
+      await Voice.stop();
+    } catch (ex) {
+      console.log('voice recording stop error: ', ex);
+    }
+  };
+
+  useEffect(() => {
+    Voice.onSpeechStart = speechStartHandler;
+    Voice.onSpeechEnd = speechEndHandler;
+    Voice.onSpeechResults = speechResultsHandler;
+    Voice.onSpeechError = speechErrorHandler;
+
+    return () => {
+      Voice.destroy().then(Voice.removeAllListeners);
+    };
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -31,20 +78,17 @@ const HomeScreen = () => {
 
       <View style={styles.recording_container}>
         {isRecording && (
-          <View style={styles.stop}>
+          <TouchableOpacity onPress={stopRecording} style={styles.stop}>
             <AppText
               text="Stop"
               extraStyles={{color: 'white', fontWeight: 'bold'}}
             />
-          </View>
+          </TouchableOpacity>
         )}
 
         <View stylele={styles.mic_container}>
           {isRecording ? (
-            <TouchableOpacity
-              onPress={() => {
-                setRecording(false);
-              }}>
+            <TouchableOpacity onPress={stopRecording}>
               <Image
                 style={styles.mic}
                 source={require('../../assets/images/stop.png')}
@@ -52,10 +96,7 @@ const HomeScreen = () => {
               />
             </TouchableOpacity>
           ) : (
-            <TouchableOpacity
-              onPress={() => {
-                setRecording(true);
-              }}>
+            <TouchableOpacity onPress={startRecording}>
               <Image
                 style={styles.mic}
                 source={require('../../assets/images/mic.png')}
